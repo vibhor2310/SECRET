@@ -1,0 +1,77 @@
+----------------------------MEMOIZATION-----------------------------------
+
+class Solution {
+public:
+    
+    int f(int i,int j,vector<vector<int>>&dp,vector<vector<int>>&matrix){
+        if(j<0||j>=matrix[0].size()){
+            return 1e9;
+        }
+        if(i==0){
+            return matrix[i][j];
+        }
+         
+         if(dp[i][j]!=-1) return dp[i][j];
+
+        int a = matrix[i][j]+f(i-1,j,dp,matrix);
+        int b=matrix[i][j]+f(i-1,j-1,dp,matrix);
+        int c=matrix[i][j]+f(i-1,j+1,dp,matrix);
+        return dp[i][j] = min({a,b,c});
+    }
+
+    int minFallingPathSum(vector<vector<int>>& matrix) {
+        int n= matrix.size();
+        int m = matrix[0].size();
+        vector<vector<int>>dp(n+1,vector<int>(m+1,-1));
+        int minm = 1e9;
+
+        for(int j=0;j<m;j++){
+            minm=min(minm,f(n-1,j,dp,matrix));
+        }
+
+        return minm;
+
+        
+    }
+};
+
+-----------------------------------TABULATION----------------------------------
+
+class Solution {
+public:
+    
+
+    int minFallingPathSum(vector<vector<int>>& matrix) {
+        int n= matrix.size();
+        int m = matrix[0].size();
+        vector<vector<int>>dp(n+1,vector<int>(m+1,0));
+
+        for(int j=0;j<m;j++){
+            dp[0][j]= matrix[0][j];
+        }
+
+        for(int i=1;i<n;i++){
+            for(int j=0;j<m;j++){
+                int dr=0,dl=0,down=0;
+               if(j-1>=0) dr = matrix[i][j]+dp[i-1][j-1];
+               else dr =1e9;
+
+                 down = matrix[i][j]+dp[i-1][j];
+
+              if(j+1<m)   dl = matrix[i][j]+dp[i-1][j+1];
+              else dl=1e9;
+
+              dp[i][j] = min({dr,dl,down});
+            }
+        }
+        int minm = 1e9;
+        for(int j=0;j<m;j++){
+            minm = min(minm,dp[n-1][j]);
+        }
+
+
+        return minm;
+
+        
+    }
+};
