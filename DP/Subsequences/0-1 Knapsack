@@ -1,0 +1,51 @@
+------------------------------MEMOIZATION-------------------------------------
+
+int f(int i,int w,vector<int>&weight,vector<int>&value,vector<vector<int>>&dp){
+        if(i==0){
+			if(weight[0]<=w){
+				return value[0];
+			}
+			else return 0;
+		}
+        if(dp[i][w]!=-1) return dp[i][w];
+	   int nottake = f(i-1,w,weight,value,dp);
+	   int take = INT_MIN;
+	   if(weight[i]<=w){
+		   take = value[i]+f(i-1,w-weight[i],weight,value,dp);
+	   }
+	   return dp[i][w]=max(take,nottake);
+   }
+
+int knapsack(vector<int> weight, vector<int> value, int n, int w) 
+{
+	// Write your code here
+	vector<vector<int>>dp(n,vector<int>(w+1,-1));
+	return f(n-1,w,weight,value,dp);
+}
+
+--------------------------------------TABULATION-----------------------------------
+
+int knapsack(vector<int> weight, vector<int> value, int n, int w) 
+{
+	// Write your code here
+	vector<vector<int>>dp(n,vector<int>(w+1,0));
+	// return f(n-1,w,weight,value,dp);
+
+	for(int j=weight[0];j<=w;j++){
+		// if(weight[0]<=j)
+		 dp[0][j]=value[0];
+	}
+
+	for(int i=1;i<n;i++){
+		for(int j=0;j<=w;j++){
+			int nottake = dp[i-1][j];
+			int take = INT_MIN;
+			if(weight[i]<=j){
+				take = value[i]+dp[i-1][j-weight[i]];
+			}
+
+			dp[i][j]= max(take,nottake);
+		}
+	}
+	return dp[n-1][w];
+}
