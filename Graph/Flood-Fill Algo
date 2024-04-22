@@ -1,0 +1,83 @@
+----------------------------DFS--------------------------------
+
+class Solution {
+public:
+
+    void dfs(int sr,int sc,vector<vector<int>>&image,int dr[],int dc[],int color,int initial,vector<vector<int>>&ans){
+        int n= image.size();
+        int m=image[0].size();
+        ans[sr][sc]= color;
+        for(int i=0;i<4;i++){
+            int nr = sr+dr[i];
+            int nc = sc+dc[i];
+            if(nr>=0&&nr<n&&nc>=0&&nc<m&&image[nr][nc]==initial&&ans[nr][nc]!=color){
+                dfs(nr,nc,image,dr,dc,color,initial,ans);
+            }
+        }
+
+    }
+    
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
+        int initial = image[sr][sc];
+        vector<vector<int>>ans=image;
+        int dr[]={-1,0,1,0};
+        int dc[]={0,1,0,-1};
+        dfs(sr,sc,image,dr,dc,color,initial,ans);
+        return ans;
+        
+    }
+};
+
+---------------------------------------BFS------------------------------(Rotten oranges)
+
+class Solution {
+public:
+    int orangesRotting(vector<vector<int>>& grid) {
+        int n= grid.size();
+        int m= grid[0].size();
+        queue<pair<pair<int,int>,int>>q;
+        int vis[n][m];
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(grid[i][j]==2){
+                    q.push({{i,j},0});
+                    vis[i][j]=2;
+                }
+                else{
+                    vis[i][j]=0;
+                }
+            }
+        }
+
+        int dr[]={-1,0,1,0};
+        int dc[]={0,1,0,-1};
+        int time=0;
+        while(!q.empty()){
+            int r =q.front().first.first;
+            int c=q.front().first.second;
+            int t=q.front().second;
+            time=max(time,t);
+            q.pop();
+            for(int i=0;i<4;i++){
+                int nr = r+dr[i];
+                int nc = c+dc[i];
+                if(nr>=0&&nr<n&&nc>=0&&nc<m&&grid[nr][nc]==1&&vis[nr][nc]!=2){
+                    q.push({{nr,nc},t+1});
+                    vis[nr][nc]=2;
+                }
+            }
+        }
+
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(vis[i][j]!=2&&grid[i][j]==1){
+                    return -1;
+                }
+            }
+        }
+        return time;
+
+
+
+    }
+};
